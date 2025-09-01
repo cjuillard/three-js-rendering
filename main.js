@@ -1,4 +1,5 @@
-// Three.js scene setup to render a few triangles
+import { circleSDFMaterial} from './sdfRendering.js';
+
 const canvas = document.getElementById('three-canvas');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight, false);
@@ -29,13 +30,27 @@ function createTriangle(color, position) {
   return mesh;
 }
 
+
 // Add a few triangles with different colors and positions
 scene.add(createTriangle(0xff5555, new THREE.Vector3(-2, 0, 0)));
 scene.add(createTriangle(0x55ff55, new THREE.Vector3(2, 0, 0)));
 scene.add(createTriangle(0x5555ff, new THREE.Vector3(0, 2, 0)));
 
-function animate() {
+const quadSize = 3.0; // Size of the quad
+const quadGeometry = new THREE.PlaneGeometry(quadSize, quadSize);
+
+const quadMesh = new THREE.Mesh(quadGeometry, circleSDFMaterial);
+quadMesh.position.set(0, -1.5, 0); // Place below the triangles
+scene.add(quadMesh);
+
+let startTime = null;
+function animate(now) {
   requestAnimationFrame(animate);
+  if (!startTime) startTime = now;
+  const elapsed = (now - startTime) / 1000.0;
+  // Animate scale with a sine wave
+  const scale = 1 + 0.5 * Math.sin(elapsed * 2.0); // oscillates between 0.5 and 1.5
+  quadMesh.scale.set(scale, scale, 1);
   renderer.render(scene, camera);
 }
 animate();
