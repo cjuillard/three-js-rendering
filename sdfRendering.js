@@ -60,8 +60,13 @@ export class SDFCircle {
     this.material.uniforms.uColor.value.set(r, g, b, a);
   }
 
+
   setPosition(x, y, z) {
     this.mesh.position.set(x, y, z);
+  }
+
+  setScale(s) {
+    this.mesh.scale.set(s, s, 1);
   }
 
   get position() {
