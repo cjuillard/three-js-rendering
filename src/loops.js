@@ -59,15 +59,21 @@ export class LoopScene {
       for(let j = 0; j < this.gridSize; j++) {
         const circle = this.circles[i * this.gridSize + j];
 
+        // Start with a grid of points
         const x = map(i, 0, this.gridSize - 1, -this.size.x / 2, this.size.x / 2);
         const y = map(j, 0, this.gridSize - 1, -this.size.y / 2, this.size.y / 2);
 
+        // Compute some normalized offsets based on the distance from center
         const tOffset = this.#getTOffset(x,y);
+        
+        // Compute size based on time (looping back to start at every t % 1 === 0)
         const size = this.#sizePeriodicFunc(t-tOffset);
 
+        // Compute position offsets based on time (looping back at t % 1 === 0)
         const xOff = this.#xDeltaPeriodicFunc(t-tOffset);
         const yOff = this.#xDeltaPeriodicFunc(t-tOffset+.25);
 
+        // Compute position offsets based on angle from center
         const angleOffset = this.#getAngleOffsetForPos(x,y);
         const newXOff = this.#xDeltaPeriodicFunc(t-angleOffset);
         const newYOff = this.#xDeltaPeriodicFunc(t-angleOffset + .25);
