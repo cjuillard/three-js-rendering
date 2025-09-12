@@ -55,6 +55,7 @@ export class LoopScene {
   update(timeSinceStart) {
     this.currTime = timeSinceStart;
     const t = this.currTime / this.loopLength;
+    const tmpColor = new THREE.Color();
     for(let i = 0; i < this.gridSize; i++) {
       for(let j = 0; j < this.gridSize; j++) {
         const circle = this.circles[i * this.gridSize + j];
@@ -82,6 +83,14 @@ export class LoopScene {
         // circle.setPosition(x + xOff, y + yOff, 0);  // Spiral
         circle.setPosition(x + newXOff, y + newYOff, 0);  // Star
         // circle.setPosition(x + newXOff + xOff, y + newYOff + yOff, 0);  // Flower-ish
+
+        // Fade alpha in and out
+        const alpha = map(Math.sin((t + tOffset) * 3), -1, 1, 0, 1);
+        circle.setColor(1, 1, 1, alpha);
+        
+        // Rotate through hue values
+        // tmpColor.setHSL((t + tOffset) % 1, 1, 0.5);
+        // circle.setColor(tmpColor.r, tmpColor.g, tmpColor.b, alpha);
         
         circle.setScale(size);
       }
