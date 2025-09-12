@@ -1,6 +1,12 @@
 import { createSDFCircleMaterial, SDFCircle } from "../sdfRendering.js";
 import { dist, map } from "./math-utils.js";
 
+export const ShapeTypes = {
+  SPIRAL: "SPIRAL",
+  STAR: "STAR",
+  FLOWERY: "FLOWERY"
+};
+
 export class LoopScene {
   constructor(gridSize, sceneSize) {
     this.gridSize = gridSize;
@@ -8,6 +14,12 @@ export class LoopScene {
     this.size = { x: sceneSize.x, y: sceneSize.y };
     this.loopLength = 5;  // length of the loop in seconds
     this.currTime = 0;
+    this.shapeType = ShapeTypes.STAR;
+    this.colorTransformations = {
+      alpha: true,
+      hue: true,
+      saturation: false
+    }
 
     for(let i = 0; i < gridSize; i++) {
       for(let j = 0; j < gridSize; j++) {
@@ -22,6 +34,16 @@ export class LoopScene {
       circle.addToScene(scene);
     });
   }
+
+  setShapeType(type) {
+    if (Object.values(ShapeTypes).includes(type)) {
+      this.shapeType = type;
+    } else {
+      console.warn(`Invalid shape type: ${type}`);
+    }
+  }
+
+
 
   #sizePeriodicFunc(p)
   {
@@ -80,17 +102,27 @@ export class LoopScene {
         const newYOff = this.#xDeltaPeriodicFunc(t-angleOffset + .25);
 
         // Update circle position and scale based on time and computed size
-        // circle.setPosition(x + xOff, y + yOff, 0);  // Spiral
-        circle.setPosition(x + newXOff, y + newYOff, 0);  // Star
-        // circle.setPosition(x + newXOff + xOff, y + newYOff + yOff, 0);  // Flower-ish
+        switch(this.shapeType) {
+          case ShapeTypes.SPIRAL:
+            circle.setPosition(x + xOff, y + yOff, 0);
+            break;
+          case ShapeTypes.STAR:
+            circle.setPosition(x + newXOff, y + newYOff, 0);
+            break;
+          case ShapeTypes.FLOWERY:
+            circle.setPosition(x + newXOff + xOff, y + newYOff + yOff, 0);
+            break;
+        }
 
         // Fade alpha in and out
-        const alpha = map(Math.sin((t + tOffset) * 3), -1, 1, 0, 1);
+        const alpha = this.colorTransformations.alpha ? map(Math.sin((t + tOffset) * 3), -1, 1, 0, 1) : 1;
         circle.setColor(1, 1, 1, alpha);
         
         // Rotate through hue values
-        // tmpColor.setHSL((t + tOffset) % 1, 1, 0.5);
-        // circle.setColor(tmpColor.r, tmpColor.g, tmpColor.b, alpha);
+        tmpColor.setHSL(this.colorTransformations.hue ? (t + tOffset) % 1 : 0, 
+          this.colorTransformations.saturation ? Math.sin((t + tOffset) * 3) : 1, 
+          this.colorTransformations.hue ? 0.5 : 1);
+        circle.setColor(tmpColor.r, tmpColor.g, tmpColor.b, alpha);
         
         circle.setScale(size);
       }
