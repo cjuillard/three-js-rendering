@@ -58,6 +58,23 @@
       <input type="range" id="zoomSlider" min="0.2" max="5" step="0.01" value="1">
       <span id="zoomValue">1.00x</span>
     </div>
+    <div style="margin-top: 18px; border-top: 1px solid #444; padding-top: 12px;">
+      <label><input type="checkbox" id="springyGridEnabled"> Springy Displacement</label>
+      <div id="springyGridControls" style="margin-top: 8px;">
+        <label for="springK">Spring K:</label>
+        <input type="range" id="springK" min="1" max="100" step="0.1" value="40">
+        <span id="springKValue">40</span><br>
+        <label for="damping">Damping:</label>
+        <input type="range" id="damping" min="0.7" max="1" step="0.001" value="0.95">
+        <span id="dampingValue">0.95</span><br>
+        <label for="mouseRadius">Mouse Radius:</label>
+        <input type="range" id="mouseRadius" min="0.5" max="10" step="0.1" value="5">
+        <span id="mouseRadiusValue">5</span><br>
+        <label for="mouseForce">Mouse Force:</label>
+        <input type="range" id="mouseForce" min="1" max="200" step="0.1" value="100.5">
+        <span id="mouseForceValue">100.5</span>
+      </div>
+    </div>
   </div>
   <script src="https://unpkg.com/three@0.155.0/build/three.min.js"></script>
   <script type="module" src="main.js"></script>

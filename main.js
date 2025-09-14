@@ -1,5 +1,5 @@
 import { circleSDFMaterial } from './sdfRendering.js';
-import { LoopScene } from './src/loops.js';
+import { LoopScene, SpringyGrid } from './src/loops.js';
 
 const FRUSTUM_HEIGHT = 10;
 
@@ -29,13 +29,35 @@ function getLoopSize() {
   const height = camera.top - camera.bottom;
   return new THREE.Vector2(width, height);
 }
+
+
+// --- Mouse Interaction ---
+let mouse = { x: 0, y: 0, ndc: new THREE.Vector2(), world: new THREE.Vector2() };
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left;
+  mouse.y = e.clientY - rect.top;
+  // NDC
+  mouse.ndc.x = (mouse.x / rect.width) * 2 - 1;
+  mouse.ndc.y = -((mouse.y / rect.height) * 2 - 1);
+  // World
+  const width = camera.right - camera.left;
+  const height = camera.top - camera.bottom;
+  mouse.world.x = camera.left + (mouse.x / rect.width) * width;
+  mouse.world.y = camera.bottom + (1 - mouse.y / rect.height) * height;
+});
+
+
+// --- Pass SpringyGrid to LoopScene ---
 const loopScene = new LoopScene(40, getLoopSize());
 loopScene.addToScene(scene);
 
-function updatePositions(timeSinceStart) {
-  loopScene.update(timeSinceStart);
-}
 
+
+function updatePositions(timeSinceStart, dt) {
+  loopScene.setMouseWorldPos(mouse.world);
+  loopScene.update(timeSinceStart, dt);
+}
 
 // Debug UI for renderer stats (created in HTML)
 const debugStats = document.getElementById('debug-stats');
@@ -55,14 +77,19 @@ function updateDebugStats() {
   `;
 }
 
+
 let startTime = null;
+let lastTime = null;
 function animate() {
   requestAnimationFrame(animate);
   const now = performance.now();
   if (!startTime) startTime = now;
+  if (!lastTime) lastTime = now;
   const elapsed = (now - startTime) / 1000.0;
+  const dt = Math.min((now - lastTime) / 1000.0, 0.05); // clamp dt
+  lastTime = now;
 
-  updatePositions(elapsed);
+  updatePositions(elapsed, dt);
 
   renderer.render(scene, camera);
   updateDebugStats();
@@ -167,6 +194,8 @@ window.addEventListener('keydown', (e) => {
 });
 
 // Handle resizing
+
+
 window.addEventListener('resize', () => {
   const aspect = window.innerWidth / window.innerHeight;
   const frustumWidth = FRUSTUM_HEIGHT * aspect;
@@ -209,3 +238,60 @@ zoomSlider.addEventListener('input', (e) => {
 
 // Set initial zoom
 setCameraZoom(parseFloat(zoomSlider.value));
+
+// --- SpringyGrid UI Controls ---
+const springyGridEnabledCheckbox = document.getElementById('springyGridEnabled');
+const springyGridControls = document.getElementById('springyGridControls');
+const springKSlider = document.getElementById('springK');
+const springKValue = document.getElementById('springKValue');
+const dampingSlider = document.getElementById('damping');
+const dampingValue = document.getElementById('dampingValue');
+const mouseRadiusSlider = document.getElementById('mouseRadius');
+const mouseRadiusValue = document.getElementById('mouseRadiusValue');
+const mouseForceSlider = document.getElementById('mouseForce');
+const mouseForceValue = document.getElementById('mouseForceValue');
+
+// Set initial values from LoopScene's springyGrid
+function updateSpringyGridUIFromScene() {
+  if (loopScene.springyGrid) {
+    springKSlider.value = loopScene.springyGrid.springK;
+    springKValue.textContent = loopScene.springyGrid.springK;
+    dampingSlider.value = loopScene.springyGrid.damping;
+    dampingValue.textContent = loopScene.springyGrid.damping;
+    mouseRadiusSlider.value = loopScene.springyGrid.mouseRadius;
+    mouseRadiusValue.textContent = loopScene.springyGrid.mouseRadius;
+    mouseForceSlider.value = loopScene.springyGrid.mouseForce;
+    mouseForceValue.textContent = loopScene.springyGrid.mouseForce;
+  }
+}
+updateSpringyGridUIFromScene();
+
+springKSlider.addEventListener('input', (e) => {
+  const val = parseFloat(e.target.value);
+  springKValue.textContent = val;
+  if (loopScene.springyGrid) loopScene.springyGrid.springK = val;
+});
+dampingSlider.addEventListener('input', (e) => {
+  const val = parseFloat(e.target.value);
+  dampingValue.textContent = val;
+  if (loopScene.springyGrid) loopScene.springyGrid.damping = val;
+});
+mouseRadiusSlider.addEventListener('input', (e) => {
+  const val = parseFloat(e.target.value);
+  mouseRadiusValue.textContent = val;
+  if (loopScene.springyGrid) loopScene.springyGrid.mouseRadius = val;
+});
+mouseForceSlider.addEventListener('input', (e) => {
+  const val = parseFloat(e.target.value);
+  mouseForceValue.textContent = val;
+  if (loopScene.springyGrid) loopScene.springyGrid.mouseForce = val;
+});
+
+// Toggle springy grid effect
+springyGridEnabledCheckbox.addEventListener('change', (e) => {
+  loopScene.springyGridEnabled = e.target.checked;
+  springyGridControls.style.opacity = e.target.checked ? '1' : '0.5';
+});
+// Set initial state
+loopScene.springyGridEnabled = springyGridEnabledCheckbox.checked;
+springyGridControls.style.opacity = springyGridEnabledCheckbox.checked ? '1' : '0.5';
