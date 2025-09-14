@@ -1,15 +1,3 @@
-// Toggle UI with spacebar
-const uiControls = document.getElementById('ui-controls');
-window.addEventListener('keydown', (e) => {
-  if (e.code === 'Space' && !e.repeat) {
-    if (uiControls.style.display === 'none') {
-      uiControls.style.display = '';
-    } else {
-      uiControls.style.display = 'none';
-    }
-    e.preventDefault();
-  }
-});
 import { circleSDFMaterial } from './sdfRendering.js';
 import { LoopScene } from './src/loops.js';
 
@@ -125,6 +113,30 @@ minSizeSlider.addEventListener('input', (e) => {
 });
 maxSizeSlider.addEventListener('input', (e) => {
   updateMaxSize(parseFloat(e.target.value));
+});
+
+// Loop length slider
+const loopLengthSlider = document.getElementById('loopLength');
+const loopLengthValue = document.getElementById('loopLengthValue');
+// Set initial value from LoopScene
+loopLengthSlider.value = loopScene.loopLength;
+loopLengthValue.textContent = loopScene.loopLength;
+loopLengthSlider.addEventListener('input', (e) => {
+  const val = parseFloat(e.target.value);
+  loopScene.loopLength = val;
+  loopLengthValue.textContent = val;
+});
+// Toggle UI with spacebar
+const uiControls = document.getElementById('ui-controls');
+window.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' && !e.repeat) {
+    if (uiControls.style.display === 'none') {
+      uiControls.style.display = '';
+    } else {
+      uiControls.style.display = 'none';
+    }
+    e.preventDefault();
+  }
 });
 
 // Handle resizing

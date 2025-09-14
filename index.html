@@ -47,6 +47,11 @@
       <label><input type="checkbox" id="hue" checked> Hue</label><br>
       <label><input type="checkbox" id="saturation"> Saturation</label>
     </div>
+    <div style="margin-top: 14px;">
+      <label for="loopLength">Loop Length:</label>
+      <input type="range" id="loopLength" min="1" max="10" step="0.1" value="5">
+      <span id="loopLengthValue">5</span> sec
+    </div>
   </div>
   <script src="https://unpkg.com/three@0.155.0/build/three.min.js"></script>
   <script type="module" src="main.js"></script>
