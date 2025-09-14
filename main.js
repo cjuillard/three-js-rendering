@@ -151,3 +151,34 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight, false);
   loopScene.setSize(getLoopSize());
 });
+
+
+// Zoom slider control
+const zoomSlider = document.getElementById('zoomSlider');
+const zoomValue = document.getElementById('zoomValue');
+// Set initial value
+zoomSlider.value = 1;
+zoomValue.textContent = '1.00x';
+
+function setCameraZoom(zoom) {
+  // Clamp zoom
+  zoom = Math.max(0.2, Math.min(5, zoom));
+  const aspect = window.innerWidth / window.innerHeight;
+  const frustumHeight = FRUSTUM_HEIGHT / zoom;
+  const frustumWidth = frustumHeight * aspect;
+  camera.top = frustumHeight / 2;
+  camera.bottom = -frustumHeight / 2;
+  camera.left = -frustumWidth / 2;
+  camera.right = frustumWidth / 2;
+  camera.updateProjectionMatrix();
+  loopScene.setSize(getLoopSize());
+}
+
+zoomSlider.addEventListener('input', (e) => {
+  const zoom = parseFloat(e.target.value);
+  setCameraZoom(zoom);
+  zoomValue.textContent = zoom.toFixed(2) + 'x';
+});
+
+// Set initial zoom
+setCameraZoom(parseFloat(zoomSlider.value));
