@@ -1,3 +1,15 @@
+// Toggle UI with spacebar
+const uiControls = document.getElementById('ui-controls');
+window.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' && !e.repeat) {
+    if (uiControls.style.display === 'none') {
+      uiControls.style.display = '';
+    } else {
+      uiControls.style.display = 'none';
+    }
+    e.preventDefault();
+  }
+});
 import { circleSDFMaterial } from './sdfRendering.js';
 import { LoopScene } from './src/loops.js';
 
