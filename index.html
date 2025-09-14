@@ -25,6 +25,19 @@
 </head>
 <body>
   <canvas id="three-canvas"></canvas>
+  <div id="ui-controls" style="position: absolute; top: 10px; left: 10px; background: rgba(34,34,51,0.85); color: #fff; padding: 16px; border-radius: 8px; z-index: 10; font-family: sans-serif;">
+    <label for="shapeType">Shape Type:</label>
+    <select id="shapeType">
+      <option value="STAR">Star</option>
+      <option value="SPIRAL">Spiral</option>
+      <option value="FLOWERY">Flowery</option>
+    </select>
+    <div style="margin-top: 10px;">
+      <label><input type="checkbox" id="alpha" checked> Alpha</label><br>
+      <label><input type="checkbox" id="hue" checked> Hue</label><br>
+      <label><input type="checkbox" id="saturation"> Saturation</label>
+    </div>
+  </div>
   <script src="https://unpkg.com/three@0.155.0/build/three.min.js"></script>
   <script type="module" src="main.js"></script>
 </body>

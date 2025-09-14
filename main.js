@@ -49,6 +49,31 @@ function animate() {
 }
 animate();
 
+// UI Controls
+const shapeTypeSelect = document.getElementById('shapeType');
+const alphaCheckbox = document.getElementById('alpha');
+const hueCheckbox = document.getElementById('hue');
+const saturationCheckbox = document.getElementById('saturation');
+
+// Set initial UI state from LoopScene
+shapeTypeSelect.value = loopScene.shapeType;
+alphaCheckbox.checked = loopScene.colorTransformations.alpha;
+hueCheckbox.checked = loopScene.colorTransformations.hue;
+saturationCheckbox.checked = loopScene.colorTransformations.saturation;
+
+shapeTypeSelect.addEventListener('change', (e) => {
+  loopScene.setShapeType(e.target.value);
+});
+alphaCheckbox.addEventListener('change', (e) => {
+  loopScene.colorTransformations.alpha = e.target.checked;
+});
+hueCheckbox.addEventListener('change', (e) => {
+  loopScene.colorTransformations.hue = e.target.checked;
+});
+saturationCheckbox.addEventListener('change', (e) => {
+  loopScene.colorTransformations.saturation = e.target.checked;
+});
+
 // Handle resizing
 window.addEventListener('resize', () => {
   const aspect = window.innerWidth / window.innerHeight;

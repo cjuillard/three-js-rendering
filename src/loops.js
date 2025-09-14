@@ -10,7 +10,7 @@ export const ShapeTypes = {
 export class LoopScene {
   constructor(gridSize, sceneSize) {
     this.gridSize = gridSize;
-    this.circles = [];
+    this.particles = [];
     this.size = { x: sceneSize.x, y: sceneSize.y };
     this.loopLength = 5;  // length of the loop in seconds
     this.currTime = 0;
@@ -20,17 +20,19 @@ export class LoopScene {
       hue: true,
       saturation: false
     }
+    this.minParticleSize = 2;
+    this.maxParticleSize = 4;
 
     for(let i = 0; i < gridSize; i++) {
       for(let j = 0; j < gridSize; j++) {
         const circle = new SDFCircle(0.1, new THREE.Vector3(i - gridSize / 2, j - gridSize / 2, 0), createSDFCircleMaterial(new THREE.Vector4(1, 1, 1, 1)));
-        this.circles.push(circle);
+        this.particles.push(circle);
       }
     }
   }
 
   addToScene(scene) {
-    this.circles.forEach(circle => {
+    this.particles.forEach(circle => {
       circle.addToScene(scene);
     });
   }
@@ -47,7 +49,9 @@ export class LoopScene {
 
   #sizePeriodicFunc(p)
   {
-    return map(Math.sin(Math.PI * 2 * p),-1,1,2,4);
+    return map(Math.sin(Math.PI * 2 * p), 
+      -1, 1,
+      this.minParticleSize, this.maxParticleSize);
   }
 
   /**
@@ -80,7 +84,7 @@ export class LoopScene {
     const tmpColor = new THREE.Color();
     for(let i = 0; i < this.gridSize; i++) {
       for(let j = 0; j < this.gridSize; j++) {
-        const circle = this.circles[i * this.gridSize + j];
+        const circle = this.particles[i * this.gridSize + j];
 
         // Start with a grid of points
         const x = map(i, 0, this.gridSize - 1, -this.size.x / 2, this.size.x / 2);
