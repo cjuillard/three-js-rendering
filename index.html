@@ -32,6 +32,15 @@
       <option value="SPIRAL">Spiral</option>
       <option value="FLOWERY">Flowery</option>
     </select>
+      <div style="margin-top: 14px;">
+        <label for="minSize">Min Size:</label>
+        <input type="range" id="minSize" min="0.5" max="10" step="0.01" value="2">
+        <span id="minSizeValue">2</span>
+        <br>
+        <label for="maxSize">Max Size:</label>
+        <input type="range" id="maxSize" min="0.5" max="10" step="0.01" value="4">
+        <span id="maxSizeValue">4</span>
+      </div>
     <div style="margin-top: 10px;">
       <label><input type="checkbox" id="alpha" checked> Alpha</label><br>
       <label><input type="checkbox" id="hue" checked> Hue</label><br>

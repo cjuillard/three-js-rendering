@@ -47,11 +47,14 @@ export class LoopScene {
 
 
 
-  #sizePeriodicFunc(p)
-  {
-    return map(Math.sin(Math.PI * 2 * p), 
+  #sizePeriodicFunc(p) {
+    // Use minParticleSize and maxParticleSize from the instance
+    return map(
+      Math.sin(Math.PI * 2 * p),
       -1, 1,
-      this.minParticleSize, this.maxParticleSize);
+      this.minParticleSize,
+      this.maxParticleSize
+    );
   }
 
   /**

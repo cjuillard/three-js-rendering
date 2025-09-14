@@ -74,6 +74,47 @@ saturationCheckbox.addEventListener('change', (e) => {
   loopScene.colorTransformations.saturation = e.target.checked;
 });
 
+
+// Particle size sliders
+const minSizeSlider = document.getElementById('minSize');
+const maxSizeSlider = document.getElementById('maxSize');
+const minSizeValue = document.getElementById('minSizeValue');
+const maxSizeValue = document.getElementById('maxSizeValue');
+
+// Set initial values from LoopScene
+minSizeSlider.value = loopScene.minParticleSize;
+maxSizeSlider.value = loopScene.maxParticleSize;
+minSizeValue.textContent = loopScene.minParticleSize;
+maxSizeValue.textContent = loopScene.maxParticleSize;
+
+function updateMinSize(val) {
+  loopScene.minParticleSize = val;
+  minSizeValue.textContent = val;
+  // Ensure min <= max
+  if (val > loopScene.maxParticleSize) {
+    loopScene.maxParticleSize = val;
+    maxSizeSlider.value = val;
+    maxSizeValue.textContent = val;
+  }
+}
+function updateMaxSize(val) {
+  loopScene.maxParticleSize = val;
+  maxSizeValue.textContent = val;
+  // Ensure max >= min
+  if (val < loopScene.minParticleSize) {
+    loopScene.minParticleSize = val;
+    minSizeSlider.value = val;
+    minSizeValue.textContent = val;
+  }
+}
+
+minSizeSlider.addEventListener('input', (e) => {
+  updateMinSize(parseFloat(e.target.value));
+});
+maxSizeSlider.addEventListener('input', (e) => {
+  updateMaxSize(parseFloat(e.target.value));
+});
+
 // Handle resizing
 window.addEventListener('resize', () => {
   const aspect = window.innerWidth / window.innerHeight;
