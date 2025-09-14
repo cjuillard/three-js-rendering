@@ -37,6 +37,7 @@ export function createSDFCircleMaterial(color) {
 
 export const circleSDFMaterial = createSDFQuadMaterial(circleSDFTexture, new THREE.Vector4(1, 0, 0, 1));
 
+const quadGeometry = new THREE.PlaneGeometry(1, 1);
 export class SDFCircle {
   constructor(radius, position, material) {
     this.radius = radius;
@@ -45,7 +46,6 @@ export class SDFCircle {
   }
 
   initMesh(position) {
-    const quadGeometry = new THREE.PlaneGeometry(this.radius / 2, this.radius / 2);
     const quadMesh = new THREE.Mesh(quadGeometry, this.material);
     quadMesh.position.copy(position);
 

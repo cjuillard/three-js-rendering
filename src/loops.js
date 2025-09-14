@@ -20,8 +20,8 @@ export class LoopScene {
       hue: true,
       saturation: false
     }
-    this.minParticleSize = 2;
-    this.maxParticleSize = 4;
+    this.minParticleSize = .1;
+    this.maxParticleSize = .2;
 
     for(let i = 0; i < gridSize; i++) {
       for(let j = 0; j < gridSize; j++) {

@@ -36,6 +36,25 @@ function updatePositions(timeSinceStart) {
   loopScene.update(timeSinceStart);
 }
 
+
+// Debug UI for renderer stats (created in HTML)
+const debugStats = document.getElementById('debug-stats');
+let debugStatsVisible = false;
+
+function updateDebugStats() {
+  if (!debugStatsVisible || !debugStats) return;
+  const stats = renderer.info;
+  debugStats.innerHTML = `
+    <b>WebGL Stats</b><br>
+    Draw Calls: ${stats.render.calls}<br>
+    Triangles: ${stats.render.triangles}<br>
+    Points: ${stats.render.points}<br>
+    Lines: ${stats.render.lines}<br>
+    Geometries: ${stats.memory.geometries}<br>
+    Textures: ${stats.memory.textures}<br>
+  `;
+}
+
 let startTime = null;
 function animate() {
   requestAnimationFrame(animate);
@@ -46,6 +65,7 @@ function animate() {
   updatePositions(elapsed);
 
   renderer.render(scene, camera);
+  updateDebugStats();
 }
 animate();
 
@@ -135,6 +155,13 @@ window.addEventListener('keydown', (e) => {
     } else {
       uiControls.style.display = 'none';
     }
+    e.preventDefault();
+  }
+  // Toggle debug stats with 'd'
+  if ((e.key === 'd' || e.key === 'D') && !e.repeat) {
+    debugStatsVisible = !debugStatsVisible;
+    if (debugStats) debugStats.style.display = debugStatsVisible ? '' : 'none';
+    if (debugStatsVisible) updateDebugStats();
     e.preventDefault();
   }
 });
